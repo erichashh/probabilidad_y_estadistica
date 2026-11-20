@@ -76,4 +76,4 @@ resultado$p.value
 t_critico = qt(1 - alpha/2, df = resultado$parameter)
 
 #region de rechazo
-cat("\nSe rechaza H0 si t <", t_critico, "o t >", -t_critico, "\n")
+cat("\nSe rechaza H0 si t <", -t_critico, "o t >", t_critico, "\n")

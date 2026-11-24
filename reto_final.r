@@ -1,6 +1,7 @@
 #Leer la base de datos CSV
 datos = read.csv("/Users/eric/workspace/probabilidad_y_estadistica/IBM_RH_base_completa.csv")
 
+#--1. BINOMIAL--
 #probabilidad estimada de trabajar horas extras
 total_empleados = nrow(datos)
 empleados_horas_extras = sum(datos$OverTime == "Yes")
@@ -25,3 +26,65 @@ prob_mas_de_3 = pbinom(3,n,p,lower.tail = FALSE)
 cat("probabilidad de que mas de 3 empleados trabajen horas extras:", prob_mas_de_3, "\n")
 cat("Porcentaje", prob_mas_de_3 * 100, "%\n")
 
+#probabilidad de que ocurran entre un rango específico de eventos
+prob_entre_2_y_4 =  sum(dbinom(2:4, n, p))
+cat("Probabilidad de que entre 2 y 4 empleados trabajen horas extras:", prob_entre_2_y_4, "\n")
+cat("Porcentaje", prob_entre_2_y_4 * 100, "%\n")
+
+cat("\n")
+#--2. DISTRIBUCION DE POISSON--
+#solicitudes simuladas en 20 días hábilies
+
+solicitudes =  c(2, 4, 1, 3, 2, 0, 5, 3, 1, 2,
+                4, 3, 2, 6, 1, 3, 4, 2, 3, 1)
+
+lambda = mean(solicitudes)
+
+cat("Días habiles:", length(solicitudes),"\n")
+cat("Total de solicitudes:", sum(solicitudes),"\n")
+cat("Promedio de solicitudes por día:", lambda, "\n")
+
+#ninguna solicitud dia habil
+
+prob_cero = dpois(0, lambda)
+cat("Probabilidad de no recibir solicitud:", prob_cero, "\n")
+cat("Porcentaje", prob_cero * 100, "%\n")
+
+#recibir menos de 3 solicitudes en un día hábil
+prob_menos_de_3 = ppois(2, lambda)
+cat("Probabilidad de recibir menos de 3 solicitudes:", prob_menos_de_3, "\n")
+cat("Porcentaje", prob_menos_de_3 * 100, "%\n")
+
+#--3. DISTRIBUCION NORMAL--
+#revisar la distribución de la edad
+
+edades = datos$Age
+hist(edades, main="Distribucion de la edad de los empleados",
+    xlab = "Edad en años", ylab = "Numero de empleados",
+    col = "lightblue")
+
+#media, desviacion estandar y curva normal
+media_edad = mean(edades)
+desviacion_edad = sd(edades)
+
+cat("Edad promedio:", media_edad, "años", "\n")
+cat("Desviación estándar de la edad:", desviacion_edad, "años", "\n")
+
+curve(dnorm(x, mean = media_edad, sd = desviacion_edad),
+      from = media_edad - 3 * desviacion_edad,
+      to = media_edad + 3 * desviacion_edad,
+      main = "Curva normal aproximada de las edades",
+      xlab = "Edad en años", ylab = "Densidad",
+      col = "blue", lwd = 2)
+
+# probabilidad de tener entre 30 y 40 años
+prob_edad_30_a_40 = pnorm(40.5, mean = media_edad, sd = desviacion_edad) - pnorm(29.5, mean = media_edad, sd = desviacion_edad)
+
+cat("Probabilidad de tener entre 30 y 40 años:", prob_edad_30_a_40, "\n")
+cat("Porcentaje", prob_edad_30_a_40 * 100, "%\n")
+
+#probabilidad de tener mas de 40 años
+# 3.4.2. Probabilidad de tener más de 40 años
+prob_mas_de_40 = pnorm(40.5, mean = media_edad, sd = desviacion_edad, lower.tail = FALSE)
+cat("Probabilidad de tener más de 40 años:", prob_mas_de_40, "\n")
+cat("Porcentaje:", prob_mas_de_40 * 100, "%\n")

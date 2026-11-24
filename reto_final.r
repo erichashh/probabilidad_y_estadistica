@@ -1,5 +1,5 @@
 #Leer la base de datos CSV
-datos = read.csv("/Users/eric/workspace/probabilidad_y_estadistica/IBM_RH_base_completa.csv")
+datos = read.csv("C:/Users/erice/workspace/probabilidad_y_estadistica/IBM_RH_base_completa.csv")
 
 #--1. BINOMIAL--
 #probabilidad estimada de trabajar horas extras
@@ -88,3 +88,32 @@ cat("Porcentaje", prob_edad_30_a_40 * 100, "%\n")
 prob_mas_de_40 = pnorm(40.5, mean = media_edad, sd = desviacion_edad, lower.tail = FALSE)
 cat("Probabilidad de tener más de 40 años:", prob_mas_de_40, "\n")
 cat("Porcentaje:", prob_mas_de_40 * 100, "%\n")
+
+cat("\n")
+
+#--4.ESTIMACION E INTERVALO DE CONFIANZA--
+intervalo_edad = t.test(edades, conf.level = 0.95)$conf.int
+cat("Estimacion puntual de la edad promedio:", media_edad, "\n")
+cat("Intervalo de confianza del 95%:", intervalo_edad[1], intervalo_edad[2], "\n")
+
+#--5. PRUEBA T BILATERAL PARA LA EDAD PROMEDIO--
+prueba_edad = t.test(edades, mu = 38, alternative = "two.sided")
+cat("Estadistico t:", prueba_edad$statistic, "\n")
+cat("Valor p:", prueba_edad$p.value, "\n")
+
+#--6. INTERVALODE CONFIANZA PARA LA DESVIACION ESTANDAR--
+grados_libertad = length(edades) - 1
+
+limite_inferior = sqrt(grados_libertad * desviacion_edad^2 / qchisq(0.975, grados_libertad))
+limite_superior = sqrt(grados_libertad * desviacion_edad^2 / qchisq(0.025, grados_libertad))
+cat("Intervalo de confianza del 95%:", limite_inferior, limite_superior, "\n")
+
+#prueba para una desviacion estandar
+sigma_referencia = 9
+
+estadistico_chi = grados_libertad * desviacion_edad^2 / sigma_referencia^2
+cola_inferior = pchisq(estadistico_chi, df=grados_libertad)
+cola_superior = pchisq(estadistico_chi, df=grados_libertad, lower.tail=FALSE)
+valor_p_sigma = 2 * min(cola_inferior, cola_superior)
+cat("Estadistico chi cuadrado:", estadistico_chi, "\n")
+cat("Valor p:", valor_p_sigma, "\n")

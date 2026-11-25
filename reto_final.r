@@ -117,3 +117,45 @@ cola_superior = pchisq(estadistico_chi, df=grados_libertad, lower.tail=FALSE)
 valor_p_sigma = 2 * min(cola_inferior, cola_superior)
 cat("Estadistico chi cuadrado:", estadistico_chi, "\n")
 cat("Valor p:", valor_p_sigma, "\n")
+
+#prueba sobre dos desviaciones estandar
+edad_con_extras = edades[datos$OverTime == "Yes"]
+edad_sin_extras = edades[datos$OverTime == "No"]
+
+prueba_f = var.test(edad_con_extras, edad_sin_extras, alternative = "two.sided")
+cat("Desviación estandar con horas extra:", sd(edad_con_extras), "años", "\n")
+cat("Desviación estandar sin horas extra:", sd(edad_sin_extras), "años", "\n")
+cat("Estadistico F:", prueba_f$statistic, "\n")
+cat("Valor p:", prueba_f$p.value, "\n")
+
+#--7. ANOVA--
+#anova resumen de ingresos por departamento
+
+#Ingresos por departamento
+grupos = split(datos$MonthlyIncome, datos$Department)
+
+print(data.frame(
+  Empleados = lengths(grupos),
+  Promedio = sprintf("%.2f", sapply(grupos, mean)),
+  DE = sprintf("%.2f", sapply(grupos, sd))
+))
+
+# anova de un factor
+anova_ingresos = aov(MonthlyIncome ~ Department, data = datos)
+tabla_anova = summary(anova_ingresos)[[1]]
+cat("Estadistico F:", tabla_anova["Department", "F value"], "\n")
+cat("Valor p:", tabla_anova["Department", "Pr(>F)"], "\n")
+
+#--8. CORRELACION Y REGRESION LINEAL--
+correlacion_ingreso = cor(datos$YearsAtCompany, datos$MonthlyIncome)
+cat("Correlación de Pearson:", correlacion_ingreso, "\n")
+
+# regresion lineal del ingreso mensual
+
+modelo_ingreso = lm(MonthlyIncome ~ YearsAtCompany, data = datos)
+resultado = summary(modelo_ingreso)
+
+cat("Intercepto:", coef(modelo_ingreso)[1], "\n")
+cat("Pendiente:", coef(modelo_ingreso)[2], "\n")
+cat("R-cuadrado:", resultado$r.squared, "\n")
+cat("Valor p de la pendiente:", resultado$coefficients[2, 4], "\n")

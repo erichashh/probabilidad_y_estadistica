@@ -1,5 +1,5 @@
 #Leer la base de datos CSV
-datos = read.csv("C:/Users/erice/workspace/probabilidad_y_estadistica/IBM_RH_base_completa.csv")
+datos = read.csv("/Users/eric/workspace/probabilidad_y_estadistica/IBM_RH_base_completa.csv")
 
 #--1. BINOMIAL--
 #probabilidad estimada de trabajar horas extras
@@ -143,6 +143,7 @@ print(data.frame(
 # anova de un factor
 anova_ingresos = aov(MonthlyIncome ~ Department, data = datos)
 tabla_anova = summary(anova_ingresos)[[1]]
+print(tabla_anova)
 cat("Estadistico F:", tabla_anova["Department", "F value"], "\n")
 cat("Valor p:", tabla_anova["Department", "Pr(>F)"], "\n")
 
